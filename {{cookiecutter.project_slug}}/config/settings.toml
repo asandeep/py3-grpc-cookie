@@ -1,0 +1,20 @@
+[global]
+log_file_size = 10000000  # ~ 10 MB
+log_file_backup_count = 10
+static_dir = "static"
+
+[default]
+log_level = "INFO"
+debug = false
+
+
+[development]
+log_level = "DEBUG"
+debug = true
+
+[testing]
+log_level = "DEBUG"
+debug = true
+
+
+[production]
