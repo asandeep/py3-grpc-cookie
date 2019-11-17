@@ -7,12 +7,9 @@
   "project_slug": "{{ cookiecutter.project_name.lower().replace(' ', '_').replace('-', '_') }}",
   "cement_app_name": "{{ cookiecutter.project_name.title().replace(' ', '') }}",
   "protobuf_namespace": "{{ cookiecutter.project_slug }}",
+  "install_precommit_hooks": "y",
   "pypi_username": "{{ cookiecutter.github_username }}",
   "version": "0.1.0",
-  "use_pytest": "n",
-  "use_pypi_deployment_with_travis": "y",
-  "add_pyup_badge": "n",
-  "create_author_file": "y",
   "open_source_license": [
     "MIT license",
     "BSD license",

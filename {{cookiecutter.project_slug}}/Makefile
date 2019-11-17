@@ -8,7 +8,9 @@ clean:
 setup:
 	pip install $(POETRY_DEPENDENCY)
 	poetry install
+	{% if cookiecutter.install_precommit_hooks == "y" %}
 	pre-commit install --install-hooks --hook-type pre-commit --hook-type pre-push
+	{% endif %}
 
 virtualenv:
 	virtualenv --prompt '|> {{ cookiecutter.project_slug }} <| ' env
@@ -32,7 +34,7 @@ virtualenv:
 # 	python -m grpc_tools.protoc -I . --python_out=. --grpc_python_out=. $^
 
 build:
-	cd proto && $(MAKE) build GAPI_COMMON_PROTO_PATH=../$(GAPI_COMMON_PROTO_PATH)
+	cd proto && $(MAKE) build
 
 test:
 python -m pytest \
@@ -48,7 +50,9 @@ docker: clean
 update:
 	poetry self:update
 	poetry update
+	{% if cookiecutter.install_precommit_hooks == "y" %}
 	pre-commit autoupdate
+	{% endif %}
 
 makemigrations:
 ifeq ($(MSG),)

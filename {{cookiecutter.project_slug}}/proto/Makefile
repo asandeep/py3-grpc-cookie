@@ -31,14 +31,10 @@ virtualenv:
 # 	python -m grpc_tools.protoc -I . --python_out=. --grpc_python_out=. $^
 
 build:
-ifeq ($(GAPI_COMMON_PROTO_PATH),)
-	@echo "Please provide Google API common proto path as GAPI_COMMON_PROTO_PATH=<absolute/relative path>"
-else
 	python -m grpc_tools.protoc \
 	-I $(GAPI_COMMON_PROTO_PATH) -I . \
 	--python_out=. --grpc_python_out=. --mypy_out=. \
 	./sentieo/proto/{{ cookiecutter.project_slug }}/v1/convert.proto ./sentieo/proto/{{ cookiecutter.project_slug }}/type/file.proto
-endif
 
 update:
 	poetry self:update
