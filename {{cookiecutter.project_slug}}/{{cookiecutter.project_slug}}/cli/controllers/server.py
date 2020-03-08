@@ -5,7 +5,7 @@ import cement
 import grpc
 
 from {{cookiecutter.project_slug}}.app.py.services import helloworld
-from {{cookiecutter.project_slug}}.proto.v1 import helloworld_pb2, helloworld_pb2_grpc
+from {{cookiecutter.project_slug}}.proto.v1 import helloworld_pb2_grpc
 
 _ONE_DAY_IN_SECONDS = 60 * 60 * 24
 

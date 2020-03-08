@@ -1,7 +1,4 @@
 import logging
-import os
-
-import grpc
 
 from {{cookiecutter.project_slug}}.proto.v1 import helloworld_pb2, helloworld_pb2_grpc
 

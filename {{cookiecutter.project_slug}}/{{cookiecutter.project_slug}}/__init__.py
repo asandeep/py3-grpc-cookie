@@ -42,7 +42,7 @@ logging_config.dictConfig(
                 "class": "logging.StreamHandler",
                 "formatter": "verbose",
             },
-            # Handler for sentieo application modules that logs at DEBUG level.
+            # Handler for {{ cookiecutter.project_slug }} application modules that logs at DEBUG level.
             "{{ cookiecutter.project_slug }}_logs_handler": {
                 "level": "DEBUG",
                 "class": "logging.handlers.RotatingFileHandler",
