@@ -1,40 +1,39 @@
 .PHONY: clean virtualenv test docker
 
-POETRY_DEPENDENCY := "poetry>=0.12"
+POETRY_VERSION := "1.0.3"
+PROTO_FILES := $(shell find {{ cookiecutter.project_slug }}/ -name "*.proto")
 
 clean:
-	find . -name '*.py[co]' -delete
+	-find . -name '*.py[ico]' -delete
+	-find {{ cookiecutter.project_slug }}/proto \( -name '*.py' ! -name '__init__.py' \) -delete
+	-rm -rf dist/*
+
 
 setup:
-	pip install $(POETRY_DEPENDENCY)
+	pip install poetry==$(POETRY_VERSION)
 	poetry install
 	{% if cookiecutter.install_precommit_hooks == "y" %}
+	git init
 	pre-commit install --install-hooks --hook-type pre-commit --hook-type pre-push
 	{% endif %}
 
-virtualenv:
-	virtualenv --prompt '|> {{ cookiecutter.project_slug }} <| ' env
-	# env/bin/pip install -r requirements-dev.txt
-	# env/bin/python setup.py develop
-	@echo
-	@echo "VirtualENV Setup Complete. Now run: source env/bin/activate"
-	@echo
+
+run-server: protobuf
+	{{ cookiecutter.project_slug }} server
 
 
-# PROTOS := $(wildcard *.proto)
+run-client: protobuf
+	{{ cookiecutter.project_slug }} client hello --from "$(FROM)"
 
-# # This
-# build: $(PROTOS)
 
-# %:
-# 	python -m grpc_tools.protoc -I . --python_out=. --grpc_python_out=. $<
+protobuf: clean
+	python -m grpc_tools.protoc -I . \
+	--python_out=. --grpc_python_out=. --mypy_out=. $(PROTO_FILES)
 
-# # Or This
-# build: $(PROTOS)
-# 	python -m grpc_tools.protoc -I . --python_out=. --grpc_python_out=. $^
 
-build:
-	cd proto && $(MAKE) build
+dist: protobuf clean
+	poetry build
+
 
 test:
 python -m pytest \
@@ -63,6 +62,9 @@ endif
 
 migrate:
 	alembic upgrade head
+
+
+
 
 # dist: clean
 # 	rm -rf dist/*

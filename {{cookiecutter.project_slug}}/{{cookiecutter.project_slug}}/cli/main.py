@@ -17,7 +17,7 @@ class {{ cookiecutter.cement_app_name }}(App):
         exit_on_close = True
 
         # register handlers
-        handlers = [base.Base, client.GreeterClient, server.GreeterServer]
+        handlers = [base.Base, client.HelloworldClient, server.HelloworldServer]
 
 
 class {{ cookiecutter.cement_app_name }}Test(TestApp, {{ cookiecutter.cement_app_name }}):
