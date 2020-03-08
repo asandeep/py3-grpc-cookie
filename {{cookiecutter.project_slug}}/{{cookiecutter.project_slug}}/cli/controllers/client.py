@@ -30,7 +30,7 @@ class HelloworldClient(cement.Controller):
             (
                 ["--from"],
                 dict(
-                    help="Name of persone sending hello request to server",
+                    help="Name of person sending hello request to server",
                     action="store",
                     dest="from_name",
                 ),
@@ -42,4 +42,4 @@ class HelloworldClient(cement.Controller):
             request.name = self.app.pargs.from_name
 
         response = self.service.SayHello(request)
-        print(respone.message)
+        print(response.message)

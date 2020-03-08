@@ -33,18 +33,23 @@ protobuf: clean
 
 dist: protobuf clean
 	poetry build
+# dist-upload:
+# 	twine upload dist/*
 
 
-test:
-python -m pytest \
-	-v \
-	--cov={{ cookiecutter.project_slug }} \
-	--cov-report=term \
-	--cov-report=html:coverage-report \
-	tests/
+test: protobuf
+	python -m pytest \
+		-v \
+		--cov={{ cookiecutter.project_slug }} \
+		--cov-report=term \
+		--cov-report=html:coverage-report \
+		--cov-fail-under=80 \
+		.
+
 
 docker: clean
 	docker build -t {{ cookiecutter.project_slug }}:latest .
+
 
 update:
 	poetry self:update
@@ -62,14 +67,3 @@ endif
 
 migrate:
 	alembic upgrade head
-
-
-
-
-# dist: clean
-# 	rm -rf dist/*
-# 	python setup.py sdist
-# 	python setup.py bdist_wheel
-
-# dist-upload:
-# 	twine upload dist/*

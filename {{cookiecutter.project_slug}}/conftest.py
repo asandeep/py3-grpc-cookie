@@ -9,7 +9,7 @@ from {{ cookiecutter.project_slug }}.app.py import models
 @pytest.fixture(autouse=True)
 def mock_session_factory():
     """
-    A function scoped fixture that mocks O3 models._SESSION_FACTORY to return a
+    A function scoped fixture that mocks models._SESSION_FACTORY to return a
     scoped session instead of plain session instance. This is to make sure that
     same session is used during lifetime of a single test function.
 

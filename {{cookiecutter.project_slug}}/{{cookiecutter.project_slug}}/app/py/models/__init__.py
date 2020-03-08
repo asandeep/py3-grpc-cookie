@@ -11,11 +11,11 @@ def get_db_url():
     """Returns the SQLAlchemy URL object for DB connection."""
 
     return engine_url.URL(
-        drivername=f"{settings.DB_DIALECT}+{settings.DB_DRIVER}",
+        drivername=settings.DB_DIALECT,
         username=settings.DB_USERNAME,
         password=settings.DB_PASSWORD,
         host=settings.DB_HOST,
-        port=settings.DB_PORT,
+        port=settings.DB_PORT or None,
         database=settings.DB_NAME,
     )
 
