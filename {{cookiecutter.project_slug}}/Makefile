@@ -1,54 +1,62 @@
 .PHONY: clean virtualenv test docker
 
-POETRY_DEPENDENCY := "poetry>=0.12"
+POETRY_VERSION := "1.0.3"
+PROTO_FILES := $(shell find {{ cookiecutter.project_slug }}/ -name "*.proto")
 
 clean:
-	find . -name '*.py[co]' -delete
+	-find . -name '*.py[ico]' -delete
+	-find {{ cookiecutter.project_slug }}/proto \( -name '*.py' ! -name '__init__.py' \) -delete
+	-rm -rf dist/*
+
 
 setup:
-	pip install $(POETRY_DEPENDENCY)
+	pip install poetry==$(POETRY_VERSION)
 	poetry install
+	{% if cookiecutter.install_precommit_hooks == "y" %}
+	git init
 	pre-commit install --install-hooks --hook-type pre-commit --hook-type pre-push
-
-virtualenv:
-	virtualenv --prompt '|> {{ cookiecutter.project_slug }} <| ' env
-	# env/bin/pip install -r requirements-dev.txt
-	# env/bin/python setup.py develop
-	@echo
-	@echo "VirtualENV Setup Complete. Now run: source env/bin/activate"
-	@echo
+	{% endif %}
 
 
-# PROTOS := $(wildcard *.proto)
+run-server: protobuf
+	{{ cookiecutter.project_slug }} server
 
-# # This
-# build: $(PROTOS)
 
-# %:
-# 	python -m grpc_tools.protoc -I . --python_out=. --grpc_python_out=. $<
+run-client: protobuf
+	{{ cookiecutter.project_slug }} client hello --from "$(FROM)"
 
-# # Or This
-# build: $(PROTOS)
-# 	python -m grpc_tools.protoc -I . --python_out=. --grpc_python_out=. $^
 
-build:
-	cd proto && $(MAKE) build GAPI_COMMON_PROTO_PATH=../$(GAPI_COMMON_PROTO_PATH)
+protobuf: clean
+	python -m grpc_tools.protoc -I . \
+	--python_out=. --grpc_python_out=. --mypy_out=. $(PROTO_FILES)
 
-test:
-python -m pytest \
-	-v \
-	--cov={{ cookiecutter.project_slug }} \
-	--cov-report=term \
-	--cov-report=html:coverage-report \
-	tests/
+
+dist: protobuf clean
+	poetry build
+# dist-upload:
+# 	twine upload dist/*
+
+
+test: protobuf
+	python -m pytest \
+		-v \
+		--cov={{ cookiecutter.project_slug }} \
+		--cov-report=term \
+		--cov-report=html:coverage-report \
+		--cov-fail-under=80 \
+		.
+
 
 docker: clean
 	docker build -t {{ cookiecutter.project_slug }}:latest .
 
+
 update:
 	poetry self:update
 	poetry update
+	{% if cookiecutter.install_precommit_hooks == "y" %}
 	pre-commit autoupdate
+	{% endif %}
 
 makemigrations:
 ifeq ($(MSG),)
@@ -59,11 +67,3 @@ endif
 
 migrate:
 	alembic upgrade head
-
-# dist: clean
-# 	rm -rf dist/*
-# 	python setup.py sdist
-# 	python setup.py bdist_wheel
-
-# dist-upload:
-# 	twine upload dist/*

@@ -15,7 +15,7 @@ class Base(Controller):
         label = "base"
 
         # text displayed at the top of --help output
-        description = "{{ cookiecutter.project_small_description }}"
+        description = "{{ cookiecutter.project_short_description }}"
 
         # text displayed at the bottom of --help output
         epilog = "Usage: {{ cookiecutter.project_slug }} command1 --foo bar"

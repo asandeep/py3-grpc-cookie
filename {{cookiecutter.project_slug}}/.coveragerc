@@ -2,3 +2,10 @@
 omit =
     # Omit test directories.
     */tests/*
+
+    # Omit top level __init__.py that contains logging config.
+    {{ cookiecutter.project_slug }}/__init__.py
+
+    # Omit protocol buffers generated IDL for python.
+    */*_pb2.py
+    */*_pb2_grpc.py

@@ -1,25 +1,25 @@
 import time
 from concurrent import futures
 
+import cement
 import grpc
-from cement import Controller
-from cement.utils.version import get_version_banner
 
 from {{cookiecutter.project_slug}}.app.py.services import helloworld
-from {{cookiecutter.protobuf_namespace}}.proto.{{cookiecutter.project_slug}}.v1 import helloworld_pb2_grpc
+from {{cookiecutter.project_slug}}.proto.v1 import helloworld_pb2_grpc
+
+_ONE_DAY_IN_SECONDS = 60 * 60 * 24
 
 
-class HelloworldServer(Controller):
+class HelloworldServer(cement.Controller):
     class Meta:  # pylint: disable=missing-class-docstring
         label = "server"
-
-        # text displayed at the top of --help output
-        description = "{{ cookiecutter.project_short_description}}"
+        stacked_type = "nested"
+        description = "Hello world server."
 
     def _default(self):
         """Starts server running greeter service."""
         server = grpc.server(futures.ThreadPoolExecutor(max_workers=10))
-        convert_pb2_grpc.add_FileConversionServicer_to_server(
+        helloworld_pb2_grpc.add_GreeterServicer_to_server(
             helloworld.GreeterServicer(), server
         )
         server.add_insecure_port("[::]:50051")

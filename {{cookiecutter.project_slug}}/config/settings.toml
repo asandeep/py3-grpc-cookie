@@ -3,14 +3,36 @@ log_file_size = 10000000  # ~ 10 MB
 log_file_backup_count = 10
 static_dir = "static"
 
+{% if cookiecutter.database == 'PostgreSQL' %}
+db_dialect = "postgresql"
+{% elif cookiecutter.database == 'MySQL' %}
+db_dialect = "mysql"
+{% elif cookiecutter.database == 'SQLite' %}
+db_dialect = "sqlite"
+{% else %}
+db_dialect = ""
+{% endif %}
+
 [default]
 log_level = "INFO"
 debug = false
 
+db_name = ""
+db_host = ""
+{% if cookiecutter.database == 'PostgreSQL' %}
+db_port = "5432"
+{% elif cookiecutter.database == 'MySQL' %}
+db_port = "3306"
+{% else %}
+db_port = ""
+{% endif %}
 
 [development]
 log_level = "DEBUG"
 debug = true
+{% if cookiecutter.database not in ['NA', 'SQLite'] %}
+db_host = "localhost"
+{% endif %}
 
 [testing]
 log_level = "DEBUG"
