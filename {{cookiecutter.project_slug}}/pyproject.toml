@@ -5,6 +5,18 @@ description = "{{ cookiecutter.project_short_description }}"
 authors = [
     "{{ cookiecutter.full_name}} <{{ cookiecutter.email }}>"
 ]
+{% if cookiecutter.open_source_license == "MIT license" %}
+license = "MIT"
+{% elif cookiecutter.open_source_license == "BSD license" %}
+license = "BSD-3-Clause"
+{% elif cookiecutter.open_source_license == "ISC license" %}
+license = "ISC"
+{% elif cookiecutter.open_source_license == "Apache Software License 2.0" %}
+license = "Apache-2.0"
+{% elif cookiecutter.open_source_license == "GNU General Public License v3" %}
+license = "GPL-3.0-only"
+{% endif %}
+
 readme = "README.md"
 
 
