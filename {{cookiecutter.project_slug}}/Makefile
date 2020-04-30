@@ -33,12 +33,23 @@ run-server: protobuf
 
 
 run-client: protobuf
-	{{ cookiecutter.project_slug }} client hello --from "$(FROM)"
+	@echo ""
+	@{{ cookiecutter.project_slug }} client hello --from "$(FROM)"
 
 
-protobuf: clean
+protobuf:
 	python -m grpc_tools.protoc -I . \
 	--python_out=. --grpc_python_out=. --mypy_out=. $(PROTO_FILES)
+
+
+proto-docs:
+	docker run \
+	--rm -v $(CURDIR)/docs:/out \
+	-v $(CURDIR)/{{ cookiecutter.project_slug }}/proto:/{{ cookiecutter.project_slug }}/proto \
+	pseudomuto/protoc-gen-doc -I . $(PROTO_FILES)
+
+	# Open generated file with default application
+	xdg-open docs/index.html
 
 
 dist: protobuf clean
@@ -48,7 +59,7 @@ dist: protobuf clean
 
 
 test: protobuf
-	python -m pytest \
+	-python -m pytest \
 		-v \
 		--cov={{ cookiecutter.project_slug }} \
 		--cov-report=term \
@@ -56,6 +67,7 @@ test: protobuf
 		--cov-fail-under=80 \
 		.
 
+	xdg-open coverage-report/index.html
 
 update:
 	poetry update
@@ -63,12 +75,14 @@ update:
 	pre-commit autoupdate
 	{% endif %}
 
+
 makemigrations:
 ifeq ($(MSG),)
 	@echo "Please provide revision message as MSG=<revision message>"
 else
 	alembic revision --autogenerate -m "$(MSG)"
 endif
+
 
 migrate:
 	alembic upgrade head

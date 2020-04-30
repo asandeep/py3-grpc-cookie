@@ -4,16 +4,17 @@ package {{ cookiecutter.project_slug }}.v1.helloworld;
 
 // The greeting service definition.
 service Greeter {
-    // Sends a greeting
+    // Sends a simple hello request to server. Request can optionally contain
+    // name of person, whom to greet.
     rpc SayHello(HelloRequest) returns (HelloReply) {}
 }
 
-// The request message containing the user's name.
+// Message sent by client to say hello to server.
 message HelloRequest {
-    string name = 1;
+    string name = 1;  // Optional. Name of person to greet.
 }
 
-// The response message containing the greetings
+// Response from server with greeting message.
 message HelloReply {
-    string message = 1;
+    string message = 1;  // Greeting message returned by server.
 }
