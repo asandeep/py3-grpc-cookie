@@ -1,3 +1,4 @@
+{% if cookiecutter.database != "NA" %}
 import uuid
 
 import pytest
@@ -6,7 +7,6 @@ from sqlalchemy import orm
 from {{ cookiecutter.project_slug }}.app.py import models
 
 
-{% if "{{ cookiecutter.database }}" != "NA" %}
 @pytest.fixture(autouse=True)
 def mock_session_factory():
     """
