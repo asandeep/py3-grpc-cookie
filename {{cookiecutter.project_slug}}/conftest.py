@@ -6,6 +6,7 @@ from sqlalchemy import orm
 from {{ cookiecutter.project_slug }}.app.py import models
 
 
+{% if "{{ cookiecutter.database }}" != "NA" %}
 @pytest.fixture(autouse=True)
 def mock_session_factory():
     """
@@ -48,3 +49,4 @@ def mock_session_factory():
     transaction.rollback()
     connection.close()
     scoped_session_factory.remove()
+{% endif %}
