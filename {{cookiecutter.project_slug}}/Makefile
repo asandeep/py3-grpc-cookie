@@ -2,6 +2,7 @@
 
 POETRY_VERSION := "1.0.3"
 PROTO_FILES := $(shell find {{ cookiecutter.project_slug }}/ -name "*.proto")
+CURRENT_APP_VERSION := $(lastword $(shell poetry version))
 
 clean:
 	-find . -name '*.py[ico]' -delete
@@ -16,6 +17,15 @@ setup:
 	git init
 	pre-commit install --install-hooks --hook-type pre-commit --hook-type pre-push
 	{% endif %}
+
+
+docker: clean protobuf
+	docker build -t {{ cookiecutter.project_slug }}:latest .
+	docker tag {{ cookiecutter.project_slug }}:latest {{ cookiecutter.project_slug }}:$(CURRENT_APP_VERSION)
+
+
+run-docker-server: docker
+	docker run -p 50051:50051 {{ cookiecutter.project_slug }}:latest
 
 
 run-server: protobuf
@@ -47,12 +57,7 @@ test: protobuf
 		.
 
 
-docker: clean
-	docker build -t {{ cookiecutter.project_slug }}:latest .
-
-
 update:
-	poetry self:update
 	poetry update
 	{% if cookiecutter.install_precommit_hooks == "y" %}
 	pre-commit autoupdate
